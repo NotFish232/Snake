@@ -22,6 +22,7 @@ public:
 
     void init() override;
     void onCollision(const sf::Entity &entity) override;
+    void onSignal(const std::string &signal);
 };
 
 #endif

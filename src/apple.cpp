@@ -5,7 +5,7 @@ using namespace std;
 using namespace sf;
 
 void Apple::placeRandom() {
-    auto snake = getEntity("snake");
+    auto snake = getEntity("Snake");
 
     do {
         setPosition({blockSize * (float)m_xDist(m_rng), blockSize * (float)m_yDist(m_rng)});
@@ -14,7 +14,7 @@ void Apple::placeRandom() {
 }
 
 Apple::Apple() : m_rng(m_dev()), m_xDist(0, horizontalBlockCount - 1), m_yDist(0, verticalBlockCount - 1) {
-    setName("apple");
+    setName("Apple");
 }
 
 Apple::~Apple() {
@@ -34,7 +34,13 @@ void Apple::init() {
 }
 
 void Apple::onCollision(const sf::Entity &entity) {
-    if (entity.getName() == "snake") {
+    if (entity.getName() == "Snake") {
         placeRandom();
+    }
+}
+
+void Apple::onSignal(const string &signal) {
+    if (signal == "GameOver") {
+        hideSelf();
     }
 }

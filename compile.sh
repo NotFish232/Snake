@@ -20,5 +20,5 @@ g++ main.cpp ./bin/*.o ../utils/bin/lib.o -o "./bin/main.out" -l sfml-system -l 
 
 end=$SECONDS
 
-echo "Total binary size: $(size ./bin)"
+echo "Total binary size: $(size ./bin/main.out)"
 echo "Compile time: $((end - start)) seconds"

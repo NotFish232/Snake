@@ -3,19 +3,25 @@
 using namespace std;
 using namespace sf;
 
+bool Snake::collidesWithSelf() const {
+    auto &front = m_bodyParts.front();
+    for (int i = 1; i < m_bodyParts.size(); ++i) {
+        if (front == m_bodyParts[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
 Snake::Snake() {
-    setName("snake");
+    setName("Snake");
 }
 
 Snake::~Snake() {
 }
 
 void Snake::init() {
-    RectangleShape head({blockSize, blockSize});
-    Vector2i center = {horizontalBlockCount / 2, verticalBlockCount / 2};
-    head.setPosition((Vector2f)(blockSize * center));
-    head.setFillColor(Color::Blue);
-    m_bodyParts.push_back(head);
+    m_bodyParts.push_back({(int)(horizontalBlockCount / 2), (int)(verticalBlockCount / 2)});
 
     m_velocity = {0, 0};
 
@@ -26,21 +32,35 @@ void Snake::input(const sf::Event &event) {
     switch (event.type) {
     case Event::KeyPressed:
         switch (event.key.code) {
+        case Keyboard::A:
         case Keyboard::Left:
-            m_velocity = {-1, 0};
+            if (m_velocity.x != 1) {
+                m_velocity = {-1, 0};
+            }
             break;
+        case Keyboard::D:
         case Keyboard::Right:
-            m_velocity = {1, 0};
+            if (m_velocity.x != -1) {
+                m_velocity = {1, 0};
+            }
             break;
+        case Keyboard::W:
         case Keyboard::Up:
-            m_velocity = {0, -1};
+            if (m_velocity.y != 1) {
+                m_velocity = {0, -1};
+            }
             break;
+        case Keyboard::S:
         case Keyboard::Down:
-            m_velocity = {0, 1};
+            if (m_velocity.y != -1) {
+                m_velocity = {0, 1};
+            }
             break;
         default:
             break;
         }
+        break;
+    default:
         break;
     }
 }
@@ -54,41 +74,55 @@ void Snake::process(float delta) {
     m_elapsed = 0;
 
     for (int i = m_bodyParts.size() - 1; i > 0; --i) {
-        m_bodyParts[i].setPosition(m_bodyParts[i - 1].getPosition());
+        m_bodyParts[i] = m_bodyParts[i - 1];
     }
 
-    auto &front = m_bodyParts.front();
-    auto currentPosition = front.getPosition();
-    front.setPosition(currentPosition + blockSize * m_velocity);
+    m_bodyParts.front() += m_velocity;
+
+    if (collidesWithSelf()) {
+        emitSignal("GameOver");
+    }
 }
 
 void Snake::onCollision(const Entity &entity) {
-    if (entity.getName() == "apple") {
+    if (entity.getName() == "Apple") {
         grow();
-    } else if (entity.getName() == "walls") {
-        sendSignal("snakeDied");
-        std::cout << "hi \n";
-        exit(1);
+    } else if (entity.getName() == "Walls") {
+        emitSignal("GameOver");
+    }
+}
+
+void Snake::onSignal(const string &signal) {
+    if (signal == "GameOver") {
+        hideSelf();
     }
 }
 
 const vector<FloatRect> Snake::getBounds() const {
     vector<FloatRect> bounds;
     for (const auto &bodyPart : m_bodyParts) {
-        bounds.push_back(bodyPart.getGlobalBounds());
+        FloatRect bound{(float)blockSize * bodyPart.x, (float)blockSize * bodyPart.y, blockSize, blockSize};
+        bounds.push_back(bound);
     }
     return bounds;
 }
 
 void Snake::draw(sf::RenderTarget &window, sf::RenderStates states) const {
-    for (const auto &bodyPart : m_bodyParts) {
-        window.draw(bodyPart);
+    for (int i = 0; i < m_bodyParts.size(); ++i) {
+        RectangleShape rect;
+        rect.setSize({blockSize, blockSize});
+        rect.setPosition((float)blockSize * m_bodyParts[i]);
+        if (i == 0) {
+            rect.setFillColor(Color::Blue);
+        } else {
+            rect.setFillColor(Color::Green);
+        }
+        window.draw(rect);
     }
 }
 
 void Snake::grow() {
     auto last = m_bodyParts.back();
-    last.setPosition(last.getPosition() - blockSize * m_velocity);
-    last.setFillColor(Color::Green);
+    last -= blockSize * m_velocity;
     m_bodyParts.push_back(last);
 }

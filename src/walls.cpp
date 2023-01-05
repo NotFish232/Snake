@@ -4,7 +4,7 @@ using namespace std;
 using namespace sf;
 
 Walls::Walls() {
-    setName("walls");
+    setName("Walls");
 }
 
 Walls::~Walls() {
