@@ -86,6 +86,7 @@ void Snake::process(float delta) {
 
 void Snake::onCollision(const Entity &entity) {
     if (entity.getName() == "Apple") {
+        emitSignal("AteApple");
         grow();
     } else if (entity.getName() == "Walls") {
         emitSignal("GameOver");
@@ -95,6 +96,10 @@ void Snake::onCollision(const Entity &entity) {
 void Snake::onSignal(const string &signal) {
     if (signal == "GameOver") {
         hideSelf();
+    } else if (signal == "RestartGame") {
+        m_bodyParts.clear();
+        init();
+        showSelf();
     }
 }
 

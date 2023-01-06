@@ -7,6 +7,8 @@ class PauseMenu : public sf::Entity {
 public:
     PauseMenu();
     ~PauseMenu();
+
+    const std::vector<sf::FloatRect> getBounds() const;
 };
 
 #endif

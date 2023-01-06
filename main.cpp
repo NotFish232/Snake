@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
     Apple apple;
     PauseMenu pauseMenu;
     GameOverMenu gameOverMenu;
-    GameLoop game("Snake Game", blockSize * horizontalBlockCount, blockSize * verticalBlockCount, FPS);
+    GameLoop game("Snake Game", windowWidth, windowHeight, FPS);
     game.addDrawable(background);
     game.addEntity(walls);
     game.addEntity(snake);

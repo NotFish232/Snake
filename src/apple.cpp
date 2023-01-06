@@ -42,5 +42,8 @@ void Apple::onCollision(const sf::Entity &entity) {
 void Apple::onSignal(const string &signal) {
     if (signal == "GameOver") {
         hideSelf();
+    } else if (signal == "RestartGame") {
+        placeRandom();
+        showSelf();
     }
 }

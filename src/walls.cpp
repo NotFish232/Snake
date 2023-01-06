@@ -11,16 +11,15 @@ Walls::~Walls() {
 }
 
 void Walls::init() {
-    m_leftWall.setSize({1, blockSize * verticalBlockCount});
-    m_rightWall.setSize({1, blockSize * verticalBlockCount});
-    m_topWall.setSize({blockSize * horizontalBlockCount, 1});
-    m_bottomWall.setSize({blockSize * horizontalBlockCount, 1});
-
+    m_leftWall.setSize({1, windowHeight});
+    m_rightWall.setSize({1, windowHeight});
+    m_topWall.setSize({windowWidth, 1});
+    m_bottomWall.setSize({windowWidth, 1});
 
     m_leftWall.setPosition(-1, 0);
-    m_rightWall.setPosition(blockSize * horizontalBlockCount, 0);
+    m_rightWall.setPosition(windowWidth, 0);
     m_topWall.setPosition(0, -1);
-    m_bottomWall.setPosition(0, blockSize * verticalBlockCount);
+    m_bottomWall.setPosition(0, windowHeight);
 }
 
 const vector<FloatRect> Walls::getBounds() const {
